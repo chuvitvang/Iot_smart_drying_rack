@@ -35,3 +35,4 @@ desktop.ini
 # 5. Khóa xác thực Firebase / Google
 *firebase-adminsdk*.json
 serviceAccountKey.json
+
