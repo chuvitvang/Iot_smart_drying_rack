@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "files": [
+    "main.py",
+    "ota.py",
+    "ads1x15.py"
+  ],
+  "changelog": "Khởi tạo hệ thống giàn phơi thông minh IoT: Đọc cảm biến ADS1115 (Mưa/LDR), DHT22, điều khiển Servo SG90, đồng bộ Firebase và cập nhật OTA từ GitHub."
+}
