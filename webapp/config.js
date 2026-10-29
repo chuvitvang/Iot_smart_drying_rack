@@ -36,3 +36,4 @@ export function loadUserConfig() {
 export function saveUserConfig(cfg) {
   localStorage.setItem("clothesline_config", JSON.stringify(cfg));
 }
+

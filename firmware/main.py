@@ -260,3 +260,4 @@ while True:
 
     # Chờ chu kỳ tiếp theo
     time.sleep(config.LOOP_INTERVAL_SEC)
+

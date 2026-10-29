@@ -38,3 +38,4 @@ def connect_wifi():
 # Thực hiện kết nối
 connect_wifi()
 gc.collect()
+

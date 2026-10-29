@@ -2,19 +2,38 @@
 # CẤU HÌNH HỆ THỐNG GIÀN PHƠI THÔNG MINH (WEMOS D1 R2 - ESP8266)
 # ==============================================================================
 
+def _load_env():
+    """Đọc cấu hình từ tệp .env (nếu có) trên bộ nhớ Flash vi điều khiển"""
+    env = {}
+    for path in (".env", "firmware/.env"):
+        try:
+            with open(path, "r") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        k, v = line.split("=", 1)
+                        # Loại bỏ khoảng trắng và dấu nháy kép / nháy đơn
+                        env[k.strip()] = v.strip().strip("'\"")
+            break
+        except OSError:
+            pass
+    return env
+
+_env = _load_env()
+
 # 1. Cấu hình WiFi
-WIFI_SSID = "YOUR_WIFI_SSID"
-WIFI_PASSWORD = "YOUR_WIFI_PASSWORD"
+WIFI_SSID = _env.get("WIFI_SSID", "YOUR_WIFI_SSID")
+WIFI_PASSWORD = _env.get("WIFI_PASSWORD", "YOUR_WIFI_PASSWORD")
 
 # 2. Cấu hình Firebase Realtime Database
 # Định dạng: https://<your-project-id>-default-rtdb.firebaseio.com
-FIREBASE_URL = "https://your-project-id-default-rtdb.firebaseio.com"
-FIREBASE_AUTH = ""  # Để trống nếu Database ở chế độ test rules hoặc điền Database Secret
+FIREBASE_URL = _env.get("FIREBASE_URL", "https://your-project-id-default-rtdb.firebaseio.com")
+FIREBASE_AUTH = _env.get("FIREBASE_AUTH", "")  # Để trống nếu Database ở chế độ test rules
 
 # 3. Cấu hình GitHub OTA
-GITHUB_USER = "chuvitvang"
-GITHUB_REPO = "Iot_smart_drying_rack"
-GITHUB_BRANCH = "main"
+GITHUB_USER = _env.get("GITHUB_USER", "chuvitvang")
+GITHUB_REPO = _env.get("GITHUB_REPO", "Iot_smart_drying_rack")
+GITHUB_BRANCH = _env.get("GITHUB_BRANCH", "main")
 GITHUB_RAW_BASE = f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/{GITHUB_BRANCH}"
 OTA_VERSION_URL = f"{GITHUB_RAW_BASE}/version.json"
 

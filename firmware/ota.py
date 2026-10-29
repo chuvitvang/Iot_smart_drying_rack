@@ -111,3 +111,4 @@ def perform_ota(ota_data):
             status="FAILED",
             trigger_update=False
         )
+

@@ -53,3 +53,4 @@ class ADS1115:
 
         # Doi voi single-ended, gia tri luon >= 0
         return max(0, val)
+

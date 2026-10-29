@@ -59,14 +59,24 @@ Iot_smart_drying_rack/
    ```
 4. Copy đường dẫn `databaseURL` (ví dụ: `https://my-project-default-rtdb.firebaseio.com/`).
 
-### Bước 2: Nạp Firmware lên WeMos D1 (uPyCraft hoặc Thonny)
-1. Cài đặt firmware MicroPython cho ESP8266 (nếu board mới hoàn toàn).
-2. Mở tệp `firmware/config.py` và điền:
-   - `WIFI_SSID`: Tên WiFi nhà bạn.
-   - `WIFI_PASSWORD`: Mật khẩu WiFi.
-   - `FIREBASE_URL`: Đường dẫn Firebase vừa tạo ở Bước 1.
-3. Dùng uPyCraft IDE hoặc Thonny nạp tất cả các file trong thư mục `firmware/` (`boot.py`, `config.py`, `ads1x15.py`, `ota.py`, `main.py`) vào bộ nhớ flash của ESP8266.
-4. Bấm nút **RST** trên WeMos D1 để khởi động. Quan sát cửa sổ Terminal để kiểm tra địa chỉ IP và trạng thái kết nối.
+### Bước 2: Cấu hình Biến môi trường & Nạp Firmware
+1. **Cấu hình thông tin kết nối an toàn với `.env`:**
+   * Tạo bản sao từ `.env.example` thành `.env`:
+     ```bash
+     cp .env.example .env
+     ```
+   * Mở file `.env` và điền thông tin của bạn:
+     ```ini
+     WIFI_SSID="Tên_WiFi_Của_Bạn"
+     WIFI_PASSWORD="Mat_Khau_WiFi"
+     FIREBASE_URL="https://your-project-id-default-rtdb.firebaseio.com"
+     ```
+   > 💡 *File `.env` đã được cấu hình trong `.gitignore`, giúp bạn yên tâm không bao giờ bị lộ mật khẩu WiFi hay URL bí mật khi đưa code lên GitHub.*
+
+2. **Nạp Firmware lên WeMos D1 (uPyCraft hoặc Thonny):**
+   * Cài đặt firmware MicroPython cho ESP8266 (nếu board mới hoàn toàn).
+   * Dùng uPyCraft IDE hoặc Thonny nạp các tệp trong thư mục `firmware/` (`boot.py`, `config.py`, `ads1x15.py`, `ota.py`, `main.py`) cùng file `.env` vào bộ nhớ flash của ESP8266.
+   * Bấm nút **RST** trên WeMos D1 để khởi động. Quan sát cửa sổ Terminal để kiểm tra địa chỉ IP và trạng thái kết nối.
 
 ### Bước 3: Khởi chạy Giao diện Web (Dashboard)
 1. Mở thư mục `webapp/`.
@@ -95,3 +105,4 @@ Iot_smart_drying_rack/
 3. Trên WebApp, mục **"CẬP NHẬT TỪ XA (GITHUB OTA)"**:
    - Bấm **"Kiểm tra cập nhật"**: Hệ thống sẽ đọc tệp `version.json` mới nhất từ GitHub Raw.
    - Bấm **"Tiến hành OTA"**: Lệnh cập nhật được gửi qua Firebase. ESP8266 sẽ tự động tải `main.py` mới, ghi đè an toàn vào Flash và tự khởi động lại (`machine.reset()`).
+
