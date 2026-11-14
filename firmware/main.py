@@ -3,6 +3,10 @@
 # WeMos D1 R2 | ADS1115 (A1/A2), DHT11 (D4) | Servo SG90 (D7) | Firebase | GitHub OTA
 # ==============================================================================
 import gc
+import config
+
+FIRMWARE_VERSION = "3.2.0"
+config.CURRENT_VERSION = FIRMWARE_VERSION
 
 gc.collect()
 for _part in (
@@ -11,8 +15,8 @@ for _part in (
     "main_sync.py",
     "main_control.py",
     "main_periodic.py",
-    "main_setup.py",
     "main_firebase.py",
+    "main_setup.py",
 ):
     gc.collect()
     with open(_part, "r") as _source:
@@ -22,7 +26,10 @@ for _part in (
     gc.collect()
 del _part, _source
 
-import urequests
+if firebase_enabled:
+    import urequests
+    reset_control_mode_on_boot()
+
 sync_ntp_time()
 if config.CHECK_GITHUB_OTA_ON_BOOT:
     try:

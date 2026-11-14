@@ -7,18 +7,20 @@
 def _load_env():
     """Đọc file cấu hình config.ini hoặc .env từ bộ nhớ Flash ESP8266."""
     paths = (
+        "/.env",
+        ".env",
+        "/firmware/.env",
+        "firmware/.env",
+        "../.env",
         "/config.ini",
         "config.ini",
         "/firmware/config.ini",
         "firmware/config.ini",
         "../config.ini",
         "../firmware/config.ini",
-        "/.env",
-        ".env",
-        "/firmware/.env",
-        "firmware/.env",
-        "../.env",
     )
+    merged_env = {}
+    loaded_paths = []
 
     for path in paths:
         try:
@@ -44,21 +46,23 @@ def _load_env():
                 env[key] = value
 
             if env:
-                ssid = env.get("WIFI_SSID", "")
-                password = env.get("WIFI_PASSWORD", "")
-
-                if ssid and password:
-                    print("[+] Da doc config:", path)
-                    print("SSID:", ssid)
-                    print("Password:", 'Da doc' if password != "YOUR_WIFI_PASSWORD" else "Chua doc")
-                    return env
-
-                print("[!] File co cau hinh nhung thieu WiFi:", path)
+                merged_env.update(env)
+                loaded_paths.append(path)
 
         except OSError:
             continue
         except Exception as e:
             print("[!] Loi doc", path, ":", repr(e))
+
+    ssid = merged_env.get("WIFI_SSID", "")
+    password = merged_env.get("WIFI_PASSWORD", "")
+    if ssid and password:
+        print("[+] Da doc config:", ", ".join(loaded_paths))
+        print("SSID:", ssid)
+        print("Password:", 'Da doc' if password != "YOUR_WIFI_PASSWORD" else "Chua doc")
+        return merged_env
+    if merged_env:
+        print("[!] File co cau hinh nhung thieu WiFi")
 
     print("[!] Khong doc duoc cau hinh WiFi!")
     return {}
@@ -86,15 +90,12 @@ LOCAL_OTA_URL = _env.get("LOCAL_OTA_URL", "")
 CHECK_GITHUB_OTA_ON_BOOT = _env.get("CHECK_GITHUB_OTA_ON_BOOT", "0") == "1"
 ENABLE_WEBREPL = _env.get("ENABLE_WEBREPL", "0") == "1"
 
-# Phiên bản hiện hành của Firmware
-CURRENT_VERSION = "3.1.0"
-
 # 4. Sơ đồ chân GPIO (WeMos D1 R2)
 PIN_I2C_SCL = 5   # D1 (GPIO 5) -> SCL ADS1115
 PIN_I2C_SDA = 4   # D2 (GPIO 4) -> SDA ADS1115
 PIN_DHT11   = 2   # D4 (GPIO 2) -> DATA DHT11
 PIN_DHT22   = PIN_DHT11 # Alias tương thích ngược
-PIN_BUTTON  = 12  # D6 (GPIO 12) -> Nút nhấn SW1 (External Pull-up 10k)
+PIN_BUTTON  = 12  # D6 (GPIO 12) -> SW1, Active HIGH (External Pull-down 10k)
 PIN_SERVO   = 13  # D7 (GPIO 13) -> PWM Động cơ Servo SG90
 
 # Kênh trên module ADS1115 (0x48)
@@ -115,4 +116,3 @@ LOOP_INTERVAL_SEC = 2.0
 
 del _env
 del _load_env
-

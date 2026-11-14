@@ -27,6 +27,8 @@ Iot_smart_drying_rack/
 └── README.md                # Tài liệu kỹ thuật & hướng dẫn triển khai V2.0
 ```
 
+WebApp đọc cấu hình Firebase local từ `webapp/.env`; file này được Git bỏ qua nhưng giá trị vẫn hiển thị trong trình duyệt, nên không đặt secret quản trị vào đó.
+
 ---
 
 ## 🔌 2. Ánh Xạ Phần Cứng & Sơ Đồ Chân (Pinout Mapping)
@@ -59,6 +61,7 @@ Iot_smart_drying_rack/
       "last_updated": 1730530000
     },
     "control": {
+      "mode": "AUTO",
       "manual_command": "OPEN",
       "servo_angle": 90,
       "rain_threshold": 200,
@@ -71,8 +74,8 @@ Iot_smart_drying_rack/
       "rain_priority_override": true
     },
     "maintenance": {
-      "current_version": "2.0.0",
-      "target_version": "2.0.0",
+      "current_version": "3.2.0",
+      "target_version": "3.2.0",
       "trigger_ota": false,
       "trigger_reset": false,
       "ota_status": "IDLE"
@@ -94,7 +97,7 @@ Iot_smart_drying_rack/
 ## 🖥️ 4. Kiến Trúc Giao Diện Frontend (3 Phân Khu SPA)
 
 1. **Trang 1: Trang Tổng quan (Overview Dashboard):**
-   - Trạng thái sào phơi: ĐANG MỞ / ĐANG THU, nút điều khiển thủ công **Mở sào (Phơi đồ)**, **Thu sào (Cất đồ)**.
+   - Trạng thái sào phơi: ĐANG MỞ / ĐANG THU; chọn **Tự động/Thủ công** bên dưới nút thu/mở. Nút thu/mở cũng tự chuyển sang thủ công.
    - Xác thực thời tiết tại chỗ: Thẻ báo Có mưa / Không mưa (`WATER_A2`) và Có nắng / Không nắng (`LDR_A1`).
    - Tích hợp **Open-Meteo Weather API**: Nhiệt độ ngoài trời, lượng mưa, tốc độ gió và độ ẩm khu vực.
    - 4 thẻ cảm biến thời gian thực: Cảm biến nước A2, Quang trở LDR A1, Nhiệt độ và Độ ẩm DHT11.
@@ -107,7 +110,7 @@ Iot_smart_drying_rack/
 
 3. **Trang 3: Trang Cài đặt và Hẹn giờ (Settings & Schedule):**
    - Cài đặt giờ mở sào (mặc định `07:00`), giờ thu sào (mặc định `18:00`), công tắc Bật/Tắt lịch trình.
-   - **Chế độ ưu tiên chống mưa (Rain Priority Override):** Thu sào ngay lập tức khi cảm biến nước A2 phát hiện mưa bất kể đang trong lịch phơi.
+   - **Chế độ ưu tiên mưa/độ ẩm:** Khi bật, mưa hoặc độ ẩm cao thu sào kể cả trong lịch phơi. Khi tắt, lịch giữ sào mở trong khung giờ phơi bất kể mưa/ẩm và thu khi hết giờ; công tắc được đồng bộ ngay lên Firebase.
    - Hiệu chuẩn ngưỡng cảm biến mưa (`rain_threshold`) và ngưỡng nắng (`sun_threshold`).
    - Cấu hình thông số kết nối Firebase RTDB & GitHub Repository trực tiếp trên giao diện.
 
@@ -128,10 +131,10 @@ Iot_smart_drying_rack/
 
 1. **Đồng bộ thời gian thực qua NTP (`ntptime`):**
    - Tự động đồng bộ thời gian từ máy chủ NTP sau khi kết nối Wi-Fi, cộng độ lệch múi giờ Việt Nam ($\text{UTC}+7 = +25200\text{s}$) để so khớp giờ mở/thu sào và tự động đặt lại `sun_minutes_today` về 0 lúc `00:00`.
-2. **Thứ tự 3 mức ưu tiên điều khiển Servo SG90:**
-   - **Mức ưu tiên 1 (Chế độ ưu tiên mưa - Rain Override):** Nếu `rain_priority_override == True` và `WATER_A2 > rain_threshold` $\rightarrow$ Ngay lập tức thu sào ($0^\circ$), `clothesline_state = "CLOSED"`.
-   - **Mức ưu tiên 2 (Lệnh thủ công qua Web hoặc nút bấm cơ SW1):** Nhấn nhả nút SW1 hoặc bấm nút trên Web sẽ điều khiển sào lập tức.
-   - **Mức ưu tiên 3 (Lịch hẹn giờ tự động):** Khi `auto_schedule_enabled == True` và không có mưa, sào mở ($90^\circ$) nếu trong khoảng `[open_time, close_time]`, ngoài khung giờ sẽ tự thu sào ($0^\circ$).
+2. **Hai mode điều khiển Servo SG90:**
+   - Mặc định sau khi khởi động/reset board là `AUTO`; mode AUTO theo lịch. Khi bật `rain_priority_override`, mưa hoặc độ ẩm cao thu sào bất kể lịch. Khi tắt, sào vẫn mở trong lịch và thu khi hết giờ.
+   - Chọn `MANUAL` trên Web hoặc nhấn SW1 (D6) để chuyển sang thủ công. Nút **Mở sào** / **Thu sào** chuyển sang thủ công và áp dụng đúng trạng thái đã chọn; mode thủ công không bị lịch hay thời tiết ghi đè.
+   - Reset board đặt `mode = "AUTO"` và `manual_command = "NONE"` trên Firebase để không khôi phục lệnh thủ công cũ.
 3. **Thống kê & Ghi nhận lịch sử:**
    - Mỗi 1 phút: nếu sào `OPEN` thì cộng 1 vào `sun_minutes_today`.
    - Mỗi 5 phút: ghi một bản ghi vào `/smart_clothesline/history/<timestamp>`.
@@ -144,11 +147,11 @@ Iot_smart_drying_rack/
 ## 📡 6. Cổng Cấu Hình WiFi Thông Minh (WiFi Captive Portal)
 
 Đối với người dùng mới hoặc khi mang thiết bị sang môi trường WiFi khác:
-1. **Tự động kích hoạt:** Nếu mạch không kết nối được WiFi sau 12 giây lúc bật nguồn, mạch tự động phát Access Point:
+1. **Kích hoạt chủ động:** Cấp nguồn hoặc nhấn RST, sau đó nhấn SW1 (D6) trong 3 giây đầu khởi động. Khi nhận nút, Access Point bật trong 3 phút:
    - **Tên WiFi:** `SaoPhoi-Setup` (mở, không cần mật khẩu).
    - **Địa chỉ IP:** `192.168.4.1` (Tích hợp Tiny DNS Server tự động mở trang cấu hình trên điện thoại).
-2. **Kích hoạt chủ động:** Nhấn giữ nút nhấn cơ **SW1 (GPIO 12)** trên 3 giây trong khi cắm nguồn hoặc bấm RST.
+2. **Tự động kích hoạt:** Nếu không yêu cầu cấu hình bằng D6 và mạch không kết nối được WiFi sau 20 giây, AP cấu hình tự bật trong 3 phút. Nếu D6 đã mở AP nhưng hết giờ, board thử kết nối bằng thông tin WiFi đã lưu và không mở AP lần hai trong cùng lần khởi động.
 3. **Thao tác người dùng:**
    - Kết nối điện thoại vào WiFi `SaoPhoi-Setup`.
    - Chọn tên WiFi nhà bạn trong danh sách các mạng được quét sẵn và nhập mật khẩu.
-   - Bấm **"Lưu WiFi & Khởi Động Lại"**. Mạch sẽ tự lưu thông tin vào `.env` và kết nối Internet tự động.
+   - Bấm **"Lưu WiFi & Khởi Động Lại"**. Mạch lưu WiFi vào `config.ini` để dễ xem/chỉnh sửa trong uPyCraft. Các thiết lập khác trong file được giữ nguyên và cấu hình đã lưu được dùng sau mỗi lần reset.
