@@ -2,14 +2,26 @@
 # .gitignore - Giàn phơi thông minh IoT
 # ==============================================================================
 
-# 1. Biến môi trường & Thông tin bí mật (Secrets)
+# 1. Biến môi trường & Thông tin bí mật (Secrets & Credentials)
 .env
 .env.local
 .env.*.local
 *.env
+webapp/.env
 firmware/.env
 firmware/secrets.py
+
+# File cấu hình chứa mật khẩu WiFi và khóa Firebase
+*.ini
+config.ini
+firmware/config.ini
+
+# Ngoại lệ: Giữ lại các file mẫu cấu hình
 !*.example
+!*.example.*
+!config.ini.example
+!firmware/config.ini.example
+!webapp/.env.example
 
 # 2. Python & MicroPython
 __pycache__/
@@ -32,7 +44,6 @@ uPyCraft/
 Thumbs.db
 desktop.ini
 
-# 5. Khóa xác thực Firebase / Google
+# 5. Khóa xác thực Firebase / Google Admin SDK
 *firebase-adminsdk*.json
 serviceAccountKey.json
-

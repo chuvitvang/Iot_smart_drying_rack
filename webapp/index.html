@@ -267,11 +267,23 @@
               <label for="input-cfg-api-key"
                 >Firebase API Key (tùy chọn):</label
               >
-              <input
-                type="text"
-                id="input-cfg-api-key"
-                placeholder="AIzaSy..."
-              />
+              <div class="password-input-wrapper">
+                <input
+                  type="password"
+                  id="input-cfg-api-key"
+                  placeholder="AIzaSy..."
+                  autocomplete="off"
+                />
+                <button
+                  type="button"
+                  id="btn-toggle-api-key"
+                  class="btn-toggle-pw"
+                  title="Hiện/Ẩn API Key"
+                  aria-label="Hiện/Ẩn API Key"
+                >
+                  👁️
+                </button>
+              </div>
             </div>
             <div class="time-box">
               <label for="input-cfg-project-id">Firebase Project ID:</label>

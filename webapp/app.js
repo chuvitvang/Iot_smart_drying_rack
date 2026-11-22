@@ -492,6 +492,19 @@ function populateConfigUI() {
 
 populateConfigUI();
 
+// Ẩn / hiện Firebase API Key để bảo mật hiển thị
+const toggleApiKeyBtn = document.getElementById('btn-toggle-api-key');
+if (toggleApiKeyBtn) {
+  toggleApiKeyBtn.addEventListener('click', () => {
+    const apiKeyInput = document.getElementById('input-cfg-api-key');
+    if (!apiKeyInput) return;
+    const isPassword = apiKeyInput.type === 'password';
+    apiKeyInput.type = isPassword ? 'text' : 'password';
+    toggleApiKeyBtn.innerText = isPassword ? '🙈' : '👁️';
+    toggleApiKeyBtn.title = isPassword ? 'Ẩn API Key' : 'Hiện API Key';
+  });
+}
+
 document.getElementById('toggle-rain-priority')?.addEventListener('change', async (event) => {
   if (!db) return;
 

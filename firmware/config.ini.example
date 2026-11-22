@@ -1,0 +1,26 @@
+# ==============================================================================
+# config.ini.example - Mẫu cấu hình thiết bị ESP8266 (MicroPython)
+# Hướng dẫn: Đổi tên file này thành "config.ini" và điền thông tin thực tế của bạn.
+# File config.ini sẽ được git tự động bỏ qua để đảm bảo an toàn bí mật dữ liệu.
+# ==============================================================================
+
+# 1. Cấu hình mạng WiFi gia đình
+WIFI_SSID="YOUR_WIFI_SSID"
+WIFI_PASSWORD="YOUR_WIFI_PASSWORD"
+
+# 2. Cấu hình Firebase Realtime Database
+# Định dạng: https://<your-project-id>-default-rtdb.firebaseio.com (hoặc asia-southeast1...)
+FIREBASE_URL="https://your-project-id-default-rtdb.firebaseio.com"
+FIREBASE_AUTH=""
+
+# 3. Cấu hình GitHub OTA
+GITHUB_USER="chuvitvang"
+GITHUB_REPO="Iot_smart_drying_rack"
+GITHUB_BRANCH="main"
+
+# 4. Tùy chọn nâng cao
+ENABLE_WEBREPL=0
+CHECK_GITHUB_OTA_ON_BOOT=0
+
+# Cập nhật firmware nội bộ qua LAN (tùy chọn)
+# LOCAL_OTA_URL="http://192.168.1.50:8000/main.py"
