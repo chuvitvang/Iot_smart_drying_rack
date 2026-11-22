@@ -1,4 +1,4 @@
-# 🌤️ Hệ Thống Giàn Phơi Thông Minh IoT (Smart Clothesline IoT System)
+#  Hệ Thống Giàn Phơi Thông Minh IoT (Smart Clothesline IoT System)
 
 [![MicroPython](https://img.shields.io/badge/MicroPython-v1.20+-blue?logo=python&logoColor=white)](https://micropython.org/)
 [![Hardware](https://img.shields.io/badge/Board-WeMos%20D1%20R2%20(ESP8266)-red?logo=espressif&logoColor=white)](https://www.espressif.com/)
@@ -13,7 +13,7 @@ Hệ thống tự động bảo vệ quần áo trước các hình thái thời
 
 ---
 
-## 📑 Mục Lục
+## Mục Lục
 1. [Tính Năng Nổi Bật](#-1-tính-năng-nổi-bật)
 2. [Kiến Trúc Hệ Thống](#-2-kiến-trúc-hệ-thống)
 3. [Sơ Đồ Phần Cứng & Đấu Nối Chân (Pinout)](#-3-sơ-đồ-phần-cứng--đấu-nối-chân-pinout)
@@ -28,22 +28,22 @@ Hệ thống tự động bảo vệ quần áo trước các hình thái thời
 
 ---
 
-## ✨ 1. Tính Năng Nổi Bật
+##  1. Tính Năng Nổi Bật
 
-- 🌧️ **Cảm biến thời tiết đa tầng:** Tích hợp bộ chuyển đổi ADC 16-bit ADS1115 đọc cảm biến giọt nước (`WATER_A2`) và quang trở đo nắng (`LDR_A1`) với độ chính xác cao; kết hợp cảm biến DHT11 đo nhiệt độ và độ ẩm môi trường.
-- ⚙️ **Chấp hành Servo SG90 an toàn:** Điều khiển góc quay sào phơi (0°: Mở phơi, 90°: Thu sào). Cơ chế tự động ngắt xung PWM sau khi quay giúp triệt tiêu hiện tượng rung giật (jitter), chống nóng động cơ và ngăn ngừa sụt áp nguồn.
-- 🧠 **Cơ chế điều khiển FSM thông minh:**
+-  **Cảm biến thời tiết đa tầng:** Tích hợp bộ chuyển đổi ADC 16-bit ADS1115 đọc cảm biến giọt nước (`WATER_A2`) và quang trở đo nắng (`LDR_A1`) với độ chính xác cao; kết hợp cảm biến DHT11 đo nhiệt độ và độ ẩm môi trường.
+-  **Chấp hành Servo SG90 an toàn:** Điều khiển góc quay sào phơi (0°: Mở phơi, 90°: Thu sào). Cơ chế tự động ngắt xung PWM sau khi quay giúp triệt tiêu hiện tượng rung giật (jitter), chống nóng động cơ và ngăn ngừa sụt áp nguồn.
+-  **Cơ chế điều khiển FSM thông minh:**
   - **Chế độ Tự động (AUTO):** Tự động mở/thu sào theo lịch trình cài đặt sẵn (`open_time` - `close_time`) kết hợp quy tắc an toàn ưu tiên mưa/ẩm cao (`rain_priority_override`).
   - **Chế độ Thủ công (MANUAL):** Cho phép người dùng can thiệp đóng/mở tức thì từ nút nhấn vật lý hoặc nút bấm trên Web Dashboard mà không bị lịch trình ghi đè.
   - **Fail-safe chống ướt:** Nếu mất kết nối với module ADC ADS1115, hệ thống tự động nhận diện thời tiết xấu và thu sào vào nhà.
-- 📡 **Wi-Fi Captive Portal thông minh:** Cho phép đổi mạng Wi-Fi dễ dàng qua điện thoại (kết nối vào AP `SaoPhoi-Setup` tại `192.168.4.1`) mà không cần cắm cáp nạp lại code.
-- ⏰ **Đồng bộ thời gian thực NTP (UTC+7):** Tự động lấy giờ chuẩn Internet, tính toán tổng số phút phơi nắng thực tế trong ngày (`sun_minutes_today`) và tự động đặt lại bộ đếm vào đúng nửa đêm `00:00`.
-- 🚀 **Cập nhật Firmware từ xa (GitHub OTA):** Tải trực tiếp mã nguồn từ GitHub Repository mà không cần tháo lắp thiết bị; cơ chế nạp file tạm `.tmp` chống hỏng hóc vi điều khiển (anti-brick).
-- 📊 **Bảng điều khiển Web Dashboard 4 Phân khu:** Thiết kế giao diện trực quan, responsive, tích hợp Chart.js vẽ biểu đồ thời gian thực, dự báo thời tiết Open-Meteo và thanh giả lập Dev Simulator Bar.
+- **Wi-Fi Captive Portal thông minh:** Cho phép đổi mạng Wi-Fi dễ dàng qua điện thoại (kết nối vào AP `SaoPhoi-Setup` tại `192.168.4.1`) mà không cần cắm cáp nạp lại code.
+-  **Đồng bộ thời gian thực NTP (UTC+7):** Tự động lấy giờ chuẩn Internet, tính toán tổng số phút phơi nắng thực tế trong ngày (`sun_minutes_today`) và tự động đặt lại bộ đếm vào đúng nửa đêm `00:00`.
+-  **Cập nhật Firmware từ xa (GitHub OTA):** Tải trực tiếp mã nguồn từ GitHub Repository mà không cần tháo lắp thiết bị; cơ chế nạp file tạm `.tmp` chống hỏng hóc vi điều khiển (anti-brick).
+-  **Bảng điều khiển Web Dashboard 4 Phân khu:** Thiết kế giao diện trực quan, responsive, tích hợp Chart.js vẽ biểu đồ thời gian thực, dự báo thời tiết Open-Meteo và thanh giả lập Dev Simulator Bar.
 
 ---
 
-## 🏛️ 2. Kiến Trúc Hệ Thống
+## 2. Kiến Trúc Hệ Thống
 
 ```text
                +-------------------------------------------------------------+
@@ -102,7 +102,7 @@ Hệ thống được thiết kế trên kit **WeMos D1 R2** dựa trên chip ES
 
 ---
 
-## 📁 4. Cấu Trúc Thư Mục Dự Án
+##  4. Cấu Trúc Thư Mục Dự Án
 
 ```text
 Iot_smart_drying_rack/
@@ -138,7 +138,7 @@ Iot_smart_drying_rack/
 
 ---
 
-## 🗄️ 5. Kiến Trúc Dữ Liệu Firebase (Schema V2.0)
+## 5. Kiến Trúc Dữ Liệu Firebase (Schema V2.0)
 
 Cơ sở dữ liệu **Firebase Realtime Database** được phân cấp rõ ràng thành các nhánh độc lập. Firmware chỉ tải từng nhánh nhỏ cần thiết để tránh tình trạng tràn bộ nhớ RAM (Out Of Memory) trên chip ESP8266.
 
@@ -209,7 +209,7 @@ Cơ sở dữ liệu **Firebase Realtime Database** được phân cấp rõ rà
 
 ---
 
-## 🖥️ 6. Giao Diện Bảng Điều Khiển Web Dashboard
+##  6. Giao Diện Bảng Điều Khiển Web Dashboard
 
 Giao diện Web Dashboard được xây dựng theo mô hình Single Page Application (SPA), trực quan hóa dữ liệu theo 4 tab chuyên biệt:
 
@@ -255,7 +255,7 @@ Nằm ở góc dưới giao diện, cung cấp môi trường kiểm thử khôn
 
 ---
 
-## 🔒 7. Bảo Mật & Quản Lý Khóa Kết Nối (Secrets & API Keys)
+##  7. Bảo Mật & Quản Lý Khóa Kết Nối (Secrets & API Keys)
 
 Để ngăn ngừa triệt để nguy cơ rò rỉ khóa API, thông tin đăng nhập Wi-Fi và đường dẫn cơ sở dữ liệu lên các kho lưu trữ công khai (GitHub), dự án áp dụng các tiêu chuẩn an ninh nghiêm ngặt sau:
 
@@ -289,7 +289,7 @@ Khi triển khai dự án thực tế, không nên để cơ sở dữ liệu �
 
 ---
 
-## 🚀 8. Hướng Dẫn Triển Khai & Cài Đặt
+##  8. Hướng Dẫn Triển Khai & Cài Đặt
 
 ### Bước 1: Chuẩn bị phần cứng & Môi trường nạp mã
 1. Chuẩn bị kit **WeMos D1 R2 (ESP8266)**, cảm biến mưa, quang trở LDR, DHT11, module ADS1115 và Servo SG90 theo đúng [bảng đấu nối chân](#-3-sơ-đồ-phần-cứng--đấu-nối-chân-pinout).
@@ -324,7 +324,7 @@ Giao diện Web là ứng dụng tĩnh (Static Web), không yêu cầu cài đ�
 
 ---
 
-## 📡 9. Cổng Cấu Hình Wi-Fi (Captive Portal)
+## 9. Cổng Cấu Hình Wi-Fi (Captive Portal)
 
 Hệ thống hỗ trợ cổng cấu hình mạng không dây thông minh, rất hữu ích khi mang thiết bị đến vị trí mới mà không cần cắm cáp vào máy tính:
 
@@ -350,7 +350,7 @@ Hệ thống hỗ trợ cổng cấu hình mạng không dây thông minh, rất
 
 ---
 
-## 🔄 10. Cập Nhật Từ Xa Over-The-Air (GitHub OTA)
+## 10. Cập Nhật Từ Xa Over-The-Air (GitHub OTA)
 
 Hệ thống tích hợp quy trình cập nhật mã nguồn từ xa an toàn qua GitHub:
 
@@ -363,7 +363,7 @@ Hệ thống tích hợp quy trình cập nhật mã nguồn từ xa an toàn qu
 
 ---
 
-## ❓ 11. Xử Lý Sự Cố Thường Gặp (Troubleshooting)
+##  11. Xử Lý Sự Cố Thường Gặp (Troubleshooting)
 
 ### 1. Board ESP8266 liên tục khởi động lại khi cắm Servo SG90?
 - **Nguyên nhân:** Động cơ Servo khi khởi động rút dòng tức thời lớn (có thể lên tới 500mA - 1A), gây sụt áp đường nguồn 5V/3.3V của ESP8266 dẫn đến Reset nguồn (Brownout).
@@ -383,7 +383,3 @@ Hệ thống tích hợp quy trình cập nhật mã nguồn từ xa an toàn qu
 - **Nguyên nhân:** Nhiễu cơ học của tiếp điểm nút bấm.
 - **Khắc phục:** Firmware đã tích hợp thuật toán chống dội phần mềm (debounce 80ms) và phân tách sự kiện: nhấn ngắn ($<1\text{s}$) để đổi trạng thái sào, giữ lâu ($\ge 3\text{s}$) để reset vi điều khiển. Đảm bảo đã gắn trở kéo xuống $10\text{ k}\Omega$ vào chân D6.
 
----
-
-## 📄 Bản Quyền & Giấy Phép
-Dự án được phát triển phục vụ mục đích học tập, nghiên cứu và ứng dụng thực tế trong lĩnh vực IoT & Nhà thông minh. Mọi đóng góp (Pull Request), báo lỗi (Issues) đều được hoan nghênh!
